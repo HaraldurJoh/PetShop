@@ -6,18 +6,34 @@ namespace EASV.PetShop.DataAccess
 {
     public class PetTypeRepository : IPetTypeRepository
     {
+        private static List<PetType> _petTypeTable = new List<PetType>();
+
+        public PetTypeRepository()
+        {
+            //Available pet types
+            PetType cat = new PetType {ID = 1, Name = "Cat"};
+            PetType dog = new PetType {ID = 2, Name = "Dog"};
+            PetType goat = new PetType {ID = 3, Name = "Goat"};
+            PetType pig = new PetType {ID = 4, Name = "Pig"};
+            _petTypeTable.AddRange(new List<PetType>{cat,dog,goat,pig});
+        }
+
         public List<PetType> GetAllPetTypes()
         {
-            List<PetType> allPetTypes = new List<PetType>();
+            return _petTypeTable;
+        }
 
-            PetType petType1 = new PetType();
-            petType1.Id = 1;
-            petType1.Name = "Dog";
+        public PetType GetByID(int id)
+        {
+            foreach (PetType petType in _petTypeTable)
+            {
+                if (petType.ID == id)
+                {
+                    return petType;
+                }
+            }
 
-            PetType petType2 = new PetType();
-            petType2.Id = 2;
-            petType2.Name = "Cat";
-            return allPetTypes;
+            return null;
         }
     }
 }

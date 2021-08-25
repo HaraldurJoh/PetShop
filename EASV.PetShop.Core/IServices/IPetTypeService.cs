@@ -5,6 +5,8 @@ namespace EASV.PetShop.Core.IServices
 {
     public interface IPetTypeService
     {
-        List<PetType> GetAllPetTypes();
+        public List<PetType> GetAllPetTypes();
+
+        public PetType GetByID(int id);
     }
 }

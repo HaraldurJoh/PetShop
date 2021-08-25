@@ -7,26 +7,41 @@ namespace EASV.PetShop.DataAccess
 {
     public class PetRepository : IPetRepository
     {
-        public List<Pet> GetAllPets()
-        {
-            List<Pet> allPets = new List<Pet>();
+        private static List<Pet> _petTable = new List<Pet>();
+        private static int nextID = 1;
 
-            PetType petType1 = new PetType();
-            petType1.Id = 1;
-            petType1.Name = "Dog";
-            
-            Pet pet1 = new Pet();
-            pet1.Id = 1;
-            pet1.Name = "Mike";
-            pet1.BirthDate = DateTime.Today;
-            pet1.SoldDate = DateTime.Today;
-            pet1.Color = "Black";
-            pet1.Type = petType1;
-            pet1.Price = 5000;
-            allPets.Add(pet1);
-            
-            //TODO
-            return allPets;
+        public PetRepository()
+        {
+            PetType dog = new PetType{ ID = 1, Name = "Dog" };
+            PetType cat = new PetType{ ID = 2, Name = "Cat" };
+
+            Pet nala = new Pet
+            {
+                Name = "Schwanz", Color = "Blå", Type = cat, Birthdate = DateTime.Now, SoldDate = DateTime.Now,
+                Price = 12.00
+            };
+            Pet hugo = new Pet
+            {
+                Name = "Hugo Helmig", Color = "Sort", Type = cat, Birthdate = DateTime.Now, SoldDate = DateTime.Now,
+                Price = 120.00
+            };
+
+            AddPet(nala);
+            AddPet(hugo);
+        }
+
+        public List<Pet> ReadAllPets()
+        {
+            return _petTable;
+        }
+
+        public Pet AddPet(Pet pet)
+        {
+            pet.ID = nextID;
+            _petTable.Add(pet);
+
+            nextID++;
+            return pet;
         }
     }
 }
