@@ -7,17 +7,17 @@ namespace EASV.PetShop.DataAccess
 {
     public class PetRepository : IPetRepository
     {
-        private static List<Pet> _petTable = new List<Pet>();
-        private static int nextID = 1;
+        private static List<Pet> PetTable = new List<Pet>();
+        private static int _nextId = 1;
 
         public PetRepository()
         {
-            PetType dog = new PetType{ ID = 1, Name = "Dog" };
-            PetType cat = new PetType{ ID = 2, Name = "Cat" };
+            PetType dog = new PetType{ Id = 1, Name = "Dog" };
+            PetType cat = new PetType{ Id = 2, Name = "Cat" };
 
             Pet Schwanz = new Pet
             {
-                Name = "Schwanz", Color = "Blå", Type = cat, Birthdate = DateTime.Now, SoldDate = DateTime.Now,
+                Name = "Schwanz", Color = "Blå", Type = dog, Birthdate = DateTime.Now, SoldDate = DateTime.Now,
                 Price = 12.00
             };
             Pet hugohelmig = new Pet
@@ -32,15 +32,15 @@ namespace EASV.PetShop.DataAccess
 
         public List<Pet> ReadAllPets()
         {
-            return _petTable;
+            return PetTable;
         }
 
         public Pet AddPet(Pet pet)
         {
-            pet.ID = nextID;
-            _petTable.Add(pet);
+            pet.Id = _nextId;
+            PetTable.Add(pet);
 
-            nextID++;
+            _nextId++;
             return pet;
         }
     }

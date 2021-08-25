@@ -7,6 +7,6 @@ namespace EASV.PetShop.Domain.IRepositories
     {
         public List<PetType> GetAllPetTypes();
 
-        public PetType GetByID(int id);
+        public PetType GetById(int id);
     }
 }

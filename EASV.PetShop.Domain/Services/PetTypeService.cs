@@ -19,9 +19,9 @@ namespace EASV.PetShop.Domain.Services
             return _repo.GetAllPetTypes();
         }
 
-        public PetType GetByID(int id)
+        public PetType GetById(int id)
         {
-            return _repo.GetByID(id);
+            return _repo.GetById(id);
         }
     }
 }

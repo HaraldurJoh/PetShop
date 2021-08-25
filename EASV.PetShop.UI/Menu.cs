@@ -28,11 +28,10 @@ namespace EASV.PetShop.UI
             {
                 if (choice == 1)
                 {
-                    //See all pets
-                    seeAllPets();
+                    SeeAllPets();
                 } else if (choice == 2)
                 {
-                    createPet();
+                    CreatePet();
                 }
                 
                 PrintNewLine();
@@ -44,8 +43,7 @@ namespace EASV.PetShop.UI
             ShowMainMenu();
             PrintNewLine();
             var selectionString = Console.ReadLine();
-            int selection;
-            if (int.TryParse(selectionString, out selection))
+            if (int.TryParse(selectionString, out var selection))
             {
                 return selection;
             }
@@ -75,33 +73,33 @@ namespace EASV.PetShop.UI
             Print(" ");
         }
 
-        private void seeAllPetTypes()
+        private void SeeAllPetTypes()
         {
             var petTypes = _petTypeService.GetAllPetTypes();
             foreach (PetType p in petTypes)
             {
-                Print($"ID: {p.ID} | {p.Name}");
+                Print($"ID: {p.Id} | {p.Name}");
             }
         }
         
-        private void seeAllPets()
+        private void SeeAllPets()
         {
             Print("All pets:");
             var pets = _petService.GetAllPets();
             foreach(Pet p in pets)
             {
-                Print($"{p.ID}, {p.Name}, {p.Type.Name}, {p.Color}, {p.Birthdate}, {p.SoldDate}, {p.Price}");
+                Print($"{p.Id}, {p.Name}, {p.Type.Name}, {p.Color}, {p.Birthdate}, {p.SoldDate}, {p.Price}");
             }
         }
 
-        private void createPet()
+        private void CreatePet()
         {
             Print("Please enter a pet name:");
             string petName = Console.ReadLine();
             PrintNewLine();
 
             Print("Please select a Pet Type ID:");
-            seeAllPetTypes();
+            SeeAllPetTypes();
             var petType = Console.ReadLine();
             int selection;
             while (!int.TryParse(petType, out selection))
@@ -110,13 +108,13 @@ namespace EASV.PetShop.UI
                 petType = Console.ReadLine();
             }
 
-            while (_petTypeService.GetByID(selection) == null)
+            while (_petTypeService.GetById(selection) == null)
             {
                 Print("Selected ID does not exist! Try again!");
                 petType = Console.ReadLine();
             }
 
-            PetType pt = _petTypeService.GetByID(selection);
+            PetType pt = _petTypeService.GetById(selection);
             
             Print("Please enter a color:");
             string petColor = Console.ReadLine();

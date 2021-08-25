@@ -8,7 +8,7 @@ using EASV.PetShop.Domain.Services;
 
 namespace EASV.PetShop.UI
 {
-    class Program
+    internal static class Program
     {
         static void Main(string[] args)
         {
