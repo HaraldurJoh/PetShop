@@ -21,7 +21,6 @@ namespace EASV.PetShop.UI
             StartLoop();
         }
         
-        //Internal methods
         private void StartLoop()
         {
             int choice;

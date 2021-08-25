@@ -15,19 +15,19 @@ namespace EASV.PetShop.DataAccess
             PetType dog = new PetType{ ID = 1, Name = "Dog" };
             PetType cat = new PetType{ ID = 2, Name = "Cat" };
 
-            Pet nala = new Pet
+            Pet Schwanz = new Pet
             {
                 Name = "Schwanz", Color = "Blå", Type = cat, Birthdate = DateTime.Now, SoldDate = DateTime.Now,
                 Price = 12.00
             };
-            Pet hugo = new Pet
+            Pet hugohelmig = new Pet
             {
                 Name = "Hugo Helmig", Color = "Sort", Type = cat, Birthdate = DateTime.Now, SoldDate = DateTime.Now,
                 Price = 120.00
             };
 
-            AddPet(nala);
-            AddPet(hugo);
+            AddPet(Schwanz);
+            AddPet(hugohelmig);
         }
 
         public List<Pet> ReadAllPets()

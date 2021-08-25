@@ -12,7 +12,6 @@ namespace EASV.PetShop.UI
     {
         static void Main(string[] args)
         {
-            //INITIALIZING
             IPetRepository petRepository = new PetRepository();
             IPetTypeRepository petTypeRepository = new PetTypeRepository();
 

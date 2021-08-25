@@ -10,7 +10,6 @@ namespace EASV.PetShop.DataAccess
 
         public PetTypeRepository()
         {
-            //Available pet types
             PetType cat = new PetType {ID = 1, Name = "Cat"};
             PetType dog = new PetType {ID = 2, Name = "Dog"};
             PetType goat = new PetType {ID = 3, Name = "Goat"};
