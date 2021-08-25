@@ -29,15 +29,46 @@ namespace EASV.PetShop.UI
                 if (choice == 1)
                 {
                     SeeAllPets();
-                } else if (choice == 2)
+                } 
+                
+                if (choice == 2)
                 {
                     CreatePet();
                 }
-                
+
+                if (choice == 3)
+                {
+                    throw new NotImplementedException(); //edit
+                }
+
+                if (choice == 4)
+                {
+                    DeletePet();
+                }
                 PrintNewLine();
             }
         }
-        
+
+        private void DeletePet()
+        {
+            SeeAllPets();
+            PrintNewLine();
+            Console.WriteLine("Select a pet to delete, by typing the id and hit enter");
+            
+            var idString = Console.ReadLine();
+            int idToDelete = 0;
+            int id;
+
+            if (int.TryParse(idString, out id))
+            {
+                idToDelete = id;
+            }
+
+            _petService.DeletePet(idToDelete);
+            PrintNewLine();
+            Console.WriteLine("The pet has been deleted");
+        }
+
         private int GetMainMenuSelection()
         {
             ShowMainMenu();

@@ -8,5 +8,9 @@ namespace EASV.PetShop.Domain.IRepositories
         public List<Pet> ReadAllPets();
 
         public Pet AddPet(Pet pet);
+
+        void DeletePet(Pet id);
+        
+        void EditPet(Pet pet);
     }
 }

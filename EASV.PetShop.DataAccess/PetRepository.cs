@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using EASV.PetShop.Domain.IRepositories;
 using EASV.PetShop.Domain.Models;
 
@@ -42,6 +43,23 @@ namespace EASV.PetShop.DataAccess
 
             _nextId++;
             return pet;
+        }
+
+        public void DeletePet(Pet id)
+        {
+            List<Pet> pets = ReadAllPets();
+            foreach (Pet pet in pets.ToList())
+            {
+                if (pet.Id.Equals(id))
+                {
+                    pets.Remove(pet);
+                }
+            }
+        }
+
+        public void EditPet(Pet pet)
+        {
+            throw new NotImplementedException();
         }
     }
 }
