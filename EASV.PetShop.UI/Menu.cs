@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EASV.PetShop.Core.IServices;
+using EASV.PetShop.DataAccess;
 using EASV.PetShop.Domain.Models;
 
 namespace EASV.PetShop.UI
@@ -88,6 +89,21 @@ namespace EASV.PetShop.UI
                     Console.WriteLine("Choose a new color:");
                     var petColor = Console.ReadLine();
                     updatedPet.Color = petColor;
+                    
+                    Console.WriteLine("Choose a new pet type");
+                    SeeAllPetTypes();
+                    var petType = Console.ReadLine();
+                    updatedPet.Type.Id = idToUpdate;
+
+                    Console.WriteLine("Write a new birthdate in dd/mm/yyyy");
+                    var release = Console.ReadLine();
+                    var Birthdate = DateTime.Parse(release);
+                    updatedPet.Birthdate = Birthdate;
+                    
+                    Console.WriteLine("Write a new sold date in dd/mm/yyyy");
+                    var SoldDate = Console.ReadLine();
+                    var soldDate = DateTime.Parse(SoldDate);
+                    updatedPet.SoldDate = soldDate;
                     
                     _petService.UpdatePet(updatedPet);
                     Console.WriteLine("Swag! Pet has been updated!");

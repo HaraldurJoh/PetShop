@@ -19,9 +19,9 @@ namespace EASV.PetShop.Domain.Services
             return _petRepository.ReadAllPets();
         }
 
-        public Pet CreatePet(Pet pet)
+        public void CreatePet(Pet pet)
         {
-            return _petRepository.AddPet(pet);
+            _petRepository.AddPet(pet);
         }
         
         public void DeletePet(int id)

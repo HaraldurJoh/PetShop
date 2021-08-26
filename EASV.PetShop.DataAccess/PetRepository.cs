@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EASV.PetShop.Domain.IRepositories;
 using EASV.PetShop.Domain.Models;
+using EASV.PetShop.Domain.Services;
 
 namespace EASV.PetShop.DataAccess
 {
@@ -56,13 +57,17 @@ namespace EASV.PetShop.DataAccess
                 }
             }
         }
-
+        
+        
         public void UpdatePet(Pet pet)
         {
             List<Pet> pets = ReadAllPets();
             
             pets.First(pet1 => pet1.Id == pet.Id).Name = pet.Name;
             pets.First(pet1 => pet1.Id == pet.Id).Color = pet.Color;
+            pets.First(pet1 => pet1.Id == pet.Id).Type = pet.Type;
+            pets.First(pet1 => pet1.Id == pet.Id).Birthdate = pet.Birthdate;
+            pets.First(pet1 => pet1.Id == pet.Id).SoldDate = pet.SoldDate;
         }
     }
 }
