@@ -57,9 +57,12 @@ namespace EASV.PetShop.DataAccess
             }
         }
 
-        public void EditPet(Pet pet)
+        public void UpdatePet(Pet pet)
         {
-            throw new NotImplementedException();
+            List<Pet> pets = ReadAllPets();
+            
+            pets.First(pet1 => pet1.Id == pet.Id).Name = pet.Name;
+            pets.First(pet1 => pet1.Id == pet.Id).Color = pet.Color;
         }
     }
 }

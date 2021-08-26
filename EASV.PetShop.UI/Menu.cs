@@ -39,7 +39,7 @@ namespace EASV.PetShop.UI
 
                 if (choice == 3)
                 {
-                    EditPet();
+                    UpdatePet();
                 }
 
                 if (choice == 4)
@@ -55,7 +55,7 @@ namespace EASV.PetShop.UI
             }
         }
 
-        private void EditPet()
+        private void UpdatePet()
         {
             SeeAllPets();
             PrintNewLine();
@@ -85,11 +85,11 @@ namespace EASV.PetShop.UI
                     var petName = Console.ReadLine();
                     updatedPet.Name = petName;
                     
-                    Console.WriteLine("Choose a new pet type:");
-                    SeeAllPetTypes(); 
-                    var petType = Console.ReadLine();
-                    int selection;
+                    Console.WriteLine("Choose a new color:");
+                    var petColor = Console.ReadLine();
+                    updatedPet.Color = petColor;
                     
+                    _petService.UpdatePet(updatedPet);
                     Console.WriteLine("Swag! Pet has been updated!");
                 }
             }
