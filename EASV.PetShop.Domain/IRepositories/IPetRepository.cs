@@ -9,7 +9,7 @@ namespace EASV.PetShop.Domain.IRepositories
 
         public Pet AddPet(Pet pet);
 
-        void DeletePet(Pet id);
+        void DeletePet(int id);
         
         void EditPet(Pet pet);
     }

@@ -45,7 +45,7 @@ namespace EASV.PetShop.DataAccess
             return pet;
         }
 
-        public void DeletePet(Pet id)
+        public void DeletePet(int id)
         {
             List<Pet> pets = ReadAllPets();
             foreach (Pet pet in pets.ToList())
