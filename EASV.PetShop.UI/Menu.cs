@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using EASV.PetShop.Core.IServices;
 using EASV.PetShop.Domain.Models;
 
@@ -38,14 +39,59 @@ namespace EASV.PetShop.UI
 
                 if (choice == 3)
                 {
-                    throw new NotImplementedException(); //edit
+                    EditPet();
                 }
 
                 if (choice == 4)
                 {
                     DeletePet();
                 }
+
+                if (choice == 5)
+                {
+                    throw new NotImplementedException(); //Search
+                }
                 PrintNewLine();
+            }
+        }
+
+        private void EditPet()
+        {
+            SeeAllPets();
+            PrintNewLine();
+
+            Console.WriteLine("Select a pet to update, by typing the id and hit enter");
+
+            var idString = Console.ReadLine();
+            int idToUpdate = 0;
+            int id;
+
+            if (int.TryParse(idString, out id))
+            {
+                idToUpdate = id;
+            }
+
+            List<Pet> pets = _petService.GetAllPets();
+
+            foreach (Pet pet in pets)
+            {
+                if (pet.Id.Equals(idToUpdate))
+                {
+                    Console.WriteLine("You have selected: Name: " + pet.Name + " Type: " + pet.Type.Name + " Color: " + pet.Color + " Birthdate: " + pet.Birthdate + " Sold date " + pet.SoldDate + " Price " + pet.Price);
+                    Pet updatedPet = new Pet();
+                    updatedPet.Id = idToUpdate;
+                    
+                    Console.WriteLine("Choose a new name:");
+                    var petName = Console.ReadLine();
+                    updatedPet.Name = petName;
+                    
+                    Console.WriteLine("Choose a new pet type:");
+                    SeeAllPetTypes(); 
+                    var petType = Console.ReadLine();
+                    int selection;
+                    
+                    Console.WriteLine("Swag! Pet has been updated!");
+                }
             }
         }
 
@@ -87,6 +133,7 @@ namespace EASV.PetShop.UI
             Print("2 - Create a pet");
             Print("3 - Edit a pet");
             Print("4 - Delete a pet");
+            Print("5 - Search for a pet");
             Print("0 - Exit");
         }
         private void WelcomeGreeting()
