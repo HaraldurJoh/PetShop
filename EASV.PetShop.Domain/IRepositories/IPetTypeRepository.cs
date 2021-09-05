@@ -5,8 +5,8 @@ namespace EASV.PetShop.Domain.IRepositories
 {
     public interface IPetTypeRepository
     {
-        public List<PetType> GetAllPetTypes();
+        List<PetType> GetAllPetTypes();
 
-        public PetType GetById(int id);
+        PetType GetPetType(int id);
     }
 }

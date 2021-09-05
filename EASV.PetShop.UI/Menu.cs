@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using EASV.PetShop.Core.IServices;
-using EASV.PetShop.DataAccess;
+using EASV.PetShop.Core.Models;
 using EASV.PetShop.Domain.Models;
 
 namespace EASV.PetShop.UI
 {
     internal class Menu
     {
-        private static IPetService _petService;
-        private static IPetTypeService _petTypeService;
+        private IPetService _petService;
+        private IPetTypeService _petTypeService;
 
         public Menu(IPetService petService, IPetTypeService petTypeService)
         {
@@ -17,12 +18,13 @@ namespace EASV.PetShop.UI
             _petTypeService = petTypeService;
         }
 
-        public void ShowMenu()
+        public void Start()
         {
-            WelcomeGreeting();
+            _petService.GetAllPets();
+            ShowWelcomeGreeting();
             StartLoop();
         }
-        
+
         private void StartLoop()
         {
             int choice;
@@ -30,9 +32,9 @@ namespace EASV.PetShop.UI
             {
                 if (choice == 1)
                 {
-                    SeeAllPets();
-                } 
-                
+                    ShowAllPets();
+                }
+
                 if (choice == 2)
                 {
                     CreatePet();
@@ -40,81 +42,81 @@ namespace EASV.PetShop.UI
 
                 if (choice == 3)
                 {
-                    UpdatePet();
+                    DeletePet();
                 }
 
                 if (choice == 4)
                 {
-                    DeletePet();
+                    UpdatePet();
                 }
 
                 if (choice == 5)
                 {
-                    throw new NotImplementedException(); //Search
+                    GetPetByPetType();
                 }
-                PrintNewLine();
-            }
-        }
 
-        private void UpdatePet()
-        {
-            SeeAllPets();
-            PrintNewLine();
-
-            Console.WriteLine("Select a pet to update, by typing the id and hit enter");
-
-            var idString = Console.ReadLine();
-            int idToUpdate = 0;
-            int id;
-
-            if (int.TryParse(idString, out id))
-            {
-                idToUpdate = id;
-            }
-
-            List<Pet> pets = _petService.GetAllPets();
-
-            foreach (Pet pet in pets)
-            {
-                if (pet.Id.Equals(idToUpdate))
+                if (choice == 6)
                 {
-                    Console.WriteLine("You have selected: Name: " + pet.Name + " Type: " + pet.Type.Name + " Color: " + pet.Color + " Birthdate: " + pet.Birthdate + " Sold date " + pet.SoldDate + " Price " + pet.Price);
-                    Pet updatedPet = new Pet();
-                    updatedPet.Id = idToUpdate;
-                    
-                    Console.WriteLine("Choose a new name:");
-                    var petName = Console.ReadLine();
-                    updatedPet.Name = petName;
-                    
-                    Console.WriteLine("Choose a new color:");
-                    var petColor = Console.ReadLine();
-                    updatedPet.Color = petColor;
-                    
-                    Console.WriteLine("Choose a new pet type");
-                    SeeAllPetTypes();
-                    var petType = Console.ReadLine();
-                    updatedPet.Type.Id = idToUpdate;
+                    ShowMostExpensivePets();
+                }
 
-                    Console.WriteLine("Write a new birthdate in dd/mm/yyyy");
-                    var release = Console.ReadLine();
-                    var Birthdate = DateTime.Parse(release);
-                    updatedPet.Birthdate = Birthdate;
-                    
-                    Console.WriteLine("Write a new sold date in dd/mm/yyyy");
-                    var SoldDate = Console.ReadLine();
-                    var soldDate = DateTime.Parse(SoldDate);
-                    updatedPet.SoldDate = soldDate;
-                    
-                    _petService.UpdatePet(updatedPet);
-                    Console.WriteLine("Swag! Pet has been updated!");
+                if (choice == 7)
+                {
+                    ShowCheapestPets();
                 }
             }
         }
 
+        private void ShowAllPets()
+        {
+            List<Pet> allPets = _petService.ReadAllPets();
+
+            foreach (Pet pet in allPets)
+            {
+                Console.WriteLine("Id: " + pet.Id + " Name: " + pet.Name + " Color: " + pet.Color + " Type: " + pet.Type.Name + " Birthdate: " + pet.BirthDate + " Price: " + pet.Price + " SoldDate: " + pet.SoldDate);
+            }
+            Console.WriteLine("\n");
+        }
+
+        private void ShowCheapestPets()
+        {
+            List<Pet> pets = _petService.ReadAllPets();
+
+            List<Pet> sortedPets = pets.OrderBy(pet => pet.Price).ToList();
+
+            foreach (Pet pet in sortedPets)
+            {
+                Console.WriteLine("Name: " + pet.Name + " Price: " + pet.Price);
+            }
+            Console.WriteLine("\n");
+        }
+
+        private void ShowMostExpensivePets()
+        {
+            List<Pet> pets = _petService.ReadAllPets();
+
+            List<Pet> sortedPets = pets.OrderByDescending(pet => pet.Price).ToList();
+            
+            foreach (Pet pet in sortedPets)
+            {
+                Console.WriteLine("Name: " + pet.Name + " Price: " + pet.Price);
+            }
+            Console.WriteLine("\n");
+        }
+
+        private void ShowAllPetTypes()
+        {
+            List<PetType> petTypes = _petTypeService.GetAllPetTypes();
+
+            foreach (PetType petType in petTypes)
+            {
+                Console.WriteLine("Id: " + petType.Id + " Name: " + petType.Name);
+            }
+        }
+        
         private void DeletePet()
         {
-            SeeAllPets();
-            PrintNewLine();
+            ShowAllPets();
             Console.WriteLine("Select a pet to delete, by typing the id and hit enter");
             
             var idString = Console.ReadLine();
@@ -125,117 +127,252 @@ namespace EASV.PetShop.UI
             {
                 idToDelete = id;
             }
-
+            
             _petService.DeletePet(idToDelete);
-            PrintNewLine();
+            
             Console.WriteLine("The pet has been deleted");
         }
-
-        private int GetMainMenuSelection()
+        
+        private void GetPetByPetType()
         {
-            ShowMainMenu();
-            PrintNewLine();
+            ShowAllPetTypes();
+
+            List<Pet> pets = _petService.ReadAllPets();
+            
+            int choice = GetPetTypeSelection();
+            
+            foreach (Pet pet in pets)
+            {
+                if (choice.Equals(pet.Type.Id))
+                {
+                    Console.WriteLine("Name: " + pet.Name);
+                }
+            }
+        }
+        
+        private void CreatePet()
+        {
+            List<Pet> pets = _petService.ReadAllPets();
+            Pet pet = new Pet();
+            
+            Console.WriteLine(StringConstants.Id);
+            var idString = Console.ReadLine();
+            int id;
+
+            if (int.TryParse(idString, out id))
+            {
+                pet.Id = id;
+            }
+            
+            Console.WriteLine(StringConstants.Name);
+            var name = Console.ReadLine();
+            pet.Name = name;
+            
+            Console.WriteLine(StringConstants.Color);
+            var color = Console.ReadLine();
+            pet.Color = color;
+            
+            Console.WriteLine(StringConstants.Type);
+            List<PetType> petTypes = _petTypeService.GetAllPetTypes();
+            
+            foreach (PetType petType in petTypes)
+            {
+                Console.WriteLine(petType.Id + ". " + petType.Name);
+            }
+
+            pet.Type = _petTypeService.GetPetType(GetPetTypeSelection());
+            
+            Console.WriteLine(pet.Type.Name);
+            
+            Console.WriteLine(StringConstants.Price);
+            var priceString = Console.ReadLine();
+            double price;
+
+            if (double.TryParse(priceString, out price))
+            {
+                pet.Price = price;
+            }
+            
+            Console.WriteLine(StringConstants.BirthDate);
+            string birthDay = Console.ReadLine();
+            var parsedBirthDay = DateTime.Parse(birthDay);
+
+            pet.BirthDate = parsedBirthDay;
+            
+            Console.WriteLine(StringConstants.SoldDate);
+            string soldDate = Console.ReadLine();
+            var parsedSoldDate = DateTime.Parse(soldDate);
+
+            pet.SoldDate = parsedSoldDate;
+            
+            pets.Add(pet);
+            
+            Console.WriteLine("You have added a new pet");
+            Console.WriteLine(" Id: " + pet.Id + " Name: " + pet.Name + " Color: " + pet.Color + " Type: "
+                              + pet.Type + " Price: " + pet.Price + " Birthdate: " + pet.BirthDate
+                              + " Sold date: " + pet.SoldDate);
+        }
+
+        private void UpdatePet()
+        {
+            ShowAllPets();
+            
+            Console.WriteLine("Select a pet to update, by typing the id and hit enter");
+
+            var idString = Console.ReadLine();
+            int idToUpdate = 0;
+            int id;
+
+            if (int.TryParse(idString, out id))
+            {
+                idToUpdate = id;
+            }
+            
+            Console.WriteLine("Choose what you want to update: ");
+            Console.WriteLine("1. Id");
+            Console.WriteLine("2. Name");
+            Console.WriteLine("3. Type");
+            Console.WriteLine("4. Birthdate");
+            Console.WriteLine("5. Sold date");
+            Console.WriteLine("6. Color");
+            Console.WriteLine("7. Price");
+            Console.WriteLine("8. Cancel");
+            
+            int choice;
+            while ((choice = GetUpdatePetSelection()) != 0)
+            {
+                if (choice == 1)
+                {
+                    Console.WriteLine("Type a new Id");
+                    var newIdString = Console.ReadLine();
+                    int newId;
+
+                    if (int.TryParse(newIdString, out newId))
+                    {
+                        _petService.UpdatePetId(idToUpdate, newId);
+                    }
+                    Console.WriteLine("\n");
+                }
+                
+                if (choice == 2)
+                {
+                    Console.WriteLine("Type a new name:");
+                    var updatedName = Console.ReadLine();
+                    
+                    _petService.UpdatePetName(idToUpdate, updatedName);
+                    Console.WriteLine("\n");
+                }
+
+                if (choice == 3)
+                {
+                    Console.WriteLine("Pick a new pet type: ");
+                    List<PetType> petTypes = _petTypeService.GetAllPetTypes();
+                    
+                    foreach (PetType petType in petTypes)
+                    {
+                        Console.WriteLine("Id: " + petType.Id + " Name: " + petType.Name);
+                    }
+                    
+                    _petService.UpdatePetType(idToUpdate, _petTypeService.GetPetType(GetPetTypeSelection()));
+                    
+                    Console.WriteLine("\n");
+                }
+
+                if (choice == 4)
+                {
+                    Console.WriteLine("Write a new birthdate in dd/mm/yyyy: ");
+                    var birthdate = Console.ReadLine();
+                    var parsedBirthday = DateTime.Parse(birthdate);
+                    
+                    _petService.UpdateBirthDate(idToUpdate, parsedBirthday);
+                    Console.WriteLine("\n");
+                }
+
+                if (choice == 5)
+                {
+                    Console.WriteLine("Write a new sold date in dd/mm/yyyy");
+                    var soldDate = Console.ReadLine();
+                    var parsedSoldDate = DateTime.Parse(soldDate);
+                    
+                    _petService.UpdateSoldDate(idToUpdate, parsedSoldDate);
+                    Console.WriteLine("\n");
+                }
+
+                if (choice == 6)
+                {
+                    Console.WriteLine("Type a new color: ");
+                    var color = Console.ReadLine();
+                    
+                    _petService.UpdatePetColor(idToUpdate, color);
+                    Console.WriteLine("\n");
+                }
+
+                if (choice == 7)
+                {
+                    Console.WriteLine("Type a new price: ");
+                    var priceString = Console.ReadLine();
+                    double price;
+
+                    if (double.TryParse(priceString, out price))
+                    {
+                        _petService.UpdatePetPrice(idToUpdate, price);
+                    }
+                    Console.WriteLine("\n");
+                }
+            }
+        }
+        
+        private void ShowWelcomeGreeting()
+        {
+            Console.WriteLine(StringConstants.Welcome);
+        }
+
+        private void ShowMainMenu()
+        {
+            Console.WriteLine(StringConstants.SelectShowAllPets);
+            Console.WriteLine(StringConstants.SelectCreatePet);
+            Console.WriteLine(StringConstants.SelectDeletePet);
+            Console.WriteLine(StringConstants.SelectUpdatePet);
+            Console.WriteLine(StringConstants.SelectSearchByType);
+            Console.WriteLine(StringConstants.SelectShowMostExpensivePets);
+            Console.WriteLine(StringConstants.SelectShowCheapestPets);
+            Console.WriteLine(StringConstants.SelectExitApplication);
+
+            Console.WriteLine("\n");
+        }
+
+        private int GetUpdatePetSelection()
+        {
             var selectionString = Console.ReadLine();
-            if (int.TryParse(selectionString, out var selection))
+            int selection;
+            if (int.TryParse(selectionString, out selection))
             {
                 return selection;
             }
             return -1;
         }
-
-        private void ShowMainMenu()
+        
+        private int GetMainMenuSelection()
         {
-            Print("1 - See all pets");
-            Print("2 - Create a pet");
-            Print("3 - Edit a pet");
-            Print("4 - Delete a pet");
-            Print("5 - Search for a pet");
-            Print("0 - Exit");
-        }
-        private void WelcomeGreeting()
-        {
-            Print("Welcome to the pet shop!");
-            Print("You have the following options:");
-        }
-        private void Print(string value)
-        {
-            Console.WriteLine(value);
-        }
-
-        private void PrintNewLine()
-        {
-            Print(" ");
-        }
-
-        private void SeeAllPetTypes()
-        {
-            var petTypes = _petTypeService.GetAllPetTypes();
-            foreach (PetType p in petTypes)
+            ShowMainMenu();
+            var selectionString = Console.ReadLine();
+            int selection;
+            if (int.TryParse(selectionString, out selection))
             {
-                Print($"ID: {p.Id} | {p.Name}");
+                return selection;
             }
+            return -1;
         }
         
-        private void SeeAllPets()
+        private int GetPetTypeSelection()
         {
-            Print("All pets:");
-            var pets = _petService.GetAllPets();
-            foreach(Pet p in pets)
-            {
-                Print($"{p.Id}, {p.Name}, {p.Type.Name}, {p.Color}, {p.Birthdate}, {p.SoldDate}, {p.Price}");
-            }
-        }
-
-        private void CreatePet()
-        {
-            Print("Please enter a pet name:");
-            string petName = Console.ReadLine();
-            PrintNewLine();
-
-            Print("Please select a Pet Type ID:");
-            SeeAllPetTypes();
-            var petType = Console.ReadLine();
+            var selectionString = Console.ReadLine();
             int selection;
-            while (!int.TryParse(petType, out selection))
+            if (int.TryParse(selectionString, out selection))
             {
-                Print("You did not type a number! Try again!");
-                petType = Console.ReadLine();
+                return selection;
             }
-
-            while (_petTypeService.GetById(selection) == null)
-            {
-                Print("Selected ID does not exist! Try again!");
-                petType = Console.ReadLine();
-            }
-
-            PetType pt = _petTypeService.GetById(selection);
-            
-            Print("Please enter a color:");
-            string petColor = Console.ReadLine();
-            PrintNewLine();
-            
-            Print("Please enter birthdate: (Format: DD-MM-YYYY)");
-            string petBirthUnformatted = Console.ReadLine();
-            DateTime petBirthday = DateTime.Parse(petBirthUnformatted);
-            PrintNewLine();
-            
-            Print("Please enter sold date: (Format: DD-MM-YYYY)");
-            string petSoldUnformatted = Console.ReadLine();
-            DateTime petSoldDate = DateTime.Parse(petSoldUnformatted);
-            PrintNewLine();
-            
-            Print("Please enter price:");
-            string petPriceUnformatted = Console.ReadLine();
-            double petPrice = double.Parse(petPriceUnformatted);
-            PrintNewLine();
-
-            Print("Swag! Your pet was created!");
-            _petService.CreatePet(
-                new Pet
-                {
-                    Name = petName, Color = petColor, Birthdate = petBirthday, SoldDate = petSoldDate, Type = pt, Price = petPrice
-                }
-            );
+            return -1;
         }
     }
 }

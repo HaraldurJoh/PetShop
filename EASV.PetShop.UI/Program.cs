@@ -5,21 +5,30 @@ using EASV.PetShop.DataAccess;
 using EASV.PetShop.Domain.IRepositories;
 using EASV.PetShop.Domain.Models;
 using EASV.PetShop.Domain.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EASV.PetShop.UI
 {
-    internal static class Program
+    class Program
     {
         static void Main(string[] args)
         {
-            IPetRepository petRepository = new PetRepository();
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddScoped<IPetRepository, PetRepository>();
+            serviceCollection.AddScoped<IPetTypeRepository, PetTypeRepository>();
+            serviceCollection.AddScoped<IPetService, PetService>();
+            serviceCollection.AddScoped<IPetTypeService, PetTypeService>();
+
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            var petService = serviceProvider.GetRequiredService<IPetService>();
+            
+            IPetRepository repo = new PetRepository();
             IPetTypeRepository petTypeRepository = new PetTypeRepository();
-
-            IPetService petService = new PetService(petRepository);
+            IPetService service = new PetService(repo);
             IPetTypeService petTypeService = new PetTypeService(petTypeRepository);
-
-            Menu menu = new Menu(petService, petTypeService);
-            menu.ShowMenu();
+            
+            Menu menu = new Menu(service, petTypeService);
+            menu.Start();
         }
     }
 }

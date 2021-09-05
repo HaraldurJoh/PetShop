@@ -7,21 +7,20 @@ namespace EASV.PetShop.Domain.Services
 {
     public class PetTypeService : IPetTypeService
     {
-        private IPetTypeRepository _repo;
+        private IPetTypeRepository _petTypeRepository;
 
-        public PetTypeService(IPetTypeRepository repo)
+        public PetTypeService(IPetTypeRepository repository)
         {
-            _repo = repo;
+            _petTypeRepository = repository;
         }
-
         public List<PetType> GetAllPetTypes()
         {
-            return _repo.GetAllPetTypes();
+            return _petTypeRepository.GetAllPetTypes();
         }
 
-        public PetType GetById(int id)
+        public PetType GetPetType(int id)
         {
-            return _repo.GetById(id);
+            return _petTypeRepository.GetPetType(id);
         }
     }
 }
